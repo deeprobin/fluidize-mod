@@ -21,6 +21,8 @@ public class FluidizeMod implements ModInitializer {
 	public static BucketItem HONEY_BUCKET = new HoneyBucketItem();
 	public static Block HONEY_BLOCK = new HoneyBlock();
 
+	public static Item POTION_BUCKET = new PotionBucketItem(new Item.Settings().maxCount(1).group(ItemGroup.BREWING));
+
 
 	@Override
 	public void onInitialize() {
@@ -33,6 +35,7 @@ public class FluidizeMod implements ModInitializer {
 		Registry.register(Registry.BLOCK, new Identifier("fluidize", "honey"), HONEY_BLOCK);
 		Registry.register(Registry.ITEM, new Identifier("fluidize", "honey_bucket"), HONEY_BUCKET);
 
+		Registry.register(Registry.ITEM, new Identifier("fluidize", "potion_bucket"), POTION_BUCKET);
 	}
 
 

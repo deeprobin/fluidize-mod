@@ -55,7 +55,7 @@ public abstract class HoneyFluid extends BaseFluid {
 
     @Environment(EnvType.CLIENT)
     public ParticleEffect getParticle() {
-        return ParticleTypes.POOF;
+        return ParticleTypes.DRIPPING_HONEY;
     }
 
     protected boolean isInfinite() {

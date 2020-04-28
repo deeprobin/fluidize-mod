@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "fluidize:item/potion_bucket_overlay",
+        "layer1": "fluidize:item/potion_bucket"
+    }
+}

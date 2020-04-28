@@ -28,17 +28,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 public class HoneyBucketItem extends BucketItem {
     public HoneyBucketItem() {
-        super(FluidizeMod.HONEY_STILL, new BucketItem.Settings().recipeRemainder(Items.BUCKET).group(ItemGroup.MISC));
+        super(FluidizeMod.HONEY_STILL, new BucketItem.Settings().recipeRemainder(Items.BUCKET).food(new FoodComponent.Builder().hunger(20).saturationModifier(0.4F).build()).group(ItemGroup.MISC));
     }
 
-    private void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info) {
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
         HitResult hitResult = rayTrace(world, user, RayTraceContext.FluidHandling.NONE);
         if (hitResult.getType() == HitResult.Type.MISS) {
             user.setCurrentHand(hand);
-            info.setReturnValue(TypedActionResult.success(user.getStackInHand(hand)));
+            return TypedActionResult.success(user.getStackInHand(hand));
         } else if (hitResult.getType() != HitResult.Type.BLOCK) {
-            info.setReturnValue(TypedActionResult.pass(itemStack));
+            return TypedActionResult.pass(itemStack);
         } else {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHitResult.getBlockPos();
@@ -49,31 +50,33 @@ public class HoneyBucketItem extends BucketItem {
                 blockState = world.getBlockState(blockPos);
                 BlockPos blockPos3 = blockState.getBlock() instanceof FluidFillable ? blockPos : blockPos2;
                 if (this.placeFluid(user, world, blockPos3, blockHitResult)) {
+                    this.onEmptied(world, user.getStackInHand(hand), blockPos3);
                     if (user instanceof ServerPlayerEntity) {
                         Criterions.PLACED_BLOCK.trigger((ServerPlayerEntity) user, blockPos3, itemStack);
                     }
 
                     user.incrementStat(Stats.USED.getOrCreateStat(this));
-                    info.setReturnValue(TypedActionResult.success(this.getEmptiedStack(itemStack, user)));
+                   return TypedActionResult.success(this.getEmptiedStack(itemStack, user));
                 } else {
                     user.setCurrentHand(hand);
-                    info.setReturnValue(TypedActionResult.success(user.getStackInHand(hand)));
+                   return TypedActionResult.success(user.getStackInHand(hand));
                 }
 
             } else {
                 user.setCurrentHand(hand);
-                info.setReturnValue(TypedActionResult.success(user.getStackInHand(hand)));
+                return TypedActionResult.success(user.getStackInHand(hand));
             }
         }
     }
 
+    @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         super.finishUsing(stack, world, user);
         if (user instanceof ServerPlayerEntity) {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)user;
             Criterions.CONSUME_ITEM.trigger(serverPlayerEntity, stack);
             serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
-            serverPlayerEntity.getHungerManager().add(20, 0.4F);
+            //serverPlayerEntity.getHungerManager().add(20, 0.4F);
         }
 
         if (!world.isClient) {
@@ -111,11 +114,6 @@ public class HoneyBucketItem extends BucketItem {
         return SoundEvents.ITEM_HONEY_BOTTLE_DRINK;
     }
 
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        user.setCurrentHand(hand);
-        return TypedActionResult.success(user.getStackInHand(hand));
-    }
-
     protected ItemStack getEmptiedStack(ItemStack stack, PlayerEntity player) {
         return !player.abilities.creativeMode ? new ItemStack(Items.BUCKET) : stack;
     }
@@ -132,7 +130,7 @@ public class HoneyBucketItem extends BucketItem {
             }
 
             this.playEmptyingSound(player, world, pos);
-            world.setBlockState(pos, FluidizeMod.MILK_STILL.getDefaultState().getBlockState(), 11);
+            world.setBlockState(pos, FluidizeMod.HONEY_STILL.getDefaultState().getBlockState(), 11);
 
 
             return true;
