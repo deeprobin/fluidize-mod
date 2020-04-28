@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "fluidize",
+  "version": "${version}",
+
+  "name": "Fluidize",
+  "description": "Fluids are beautiful",
+  "authors": [
+    "DeepRobin"
+  ],
+  "contact": {
+    "homepage": "https://deeprobin.de/",
+    "sources": "https://github.com/deeprobin/fluidize"
+  },
+
+  "license": "MIT",
+  "icon": "assets/fluidize/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.deeprobin.fluidize.FluidizeMod"
+    ],
+    "client": [
+      "de.deeprobin.fluidize.FluidizeModClient"
+    ]
+  },
+  "mixins": [
+    "fluidize.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.15.x"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

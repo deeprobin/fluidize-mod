@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "de.deeprobin.fluidize.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MilkBucketMixin",
+    "BeehiveBlockMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

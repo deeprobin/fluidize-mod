@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values": [
+		"fluidize:milk",
+		"fluidize:milk_flowing",
+		"fludize:honey",
+		"fluidize:honey_flowing"
+	]
+}
